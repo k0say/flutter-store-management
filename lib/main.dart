@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_bloc/bloc/weather_bloc.dart';
+import 'package:test_bloc/data/data_provider/weather_data_provider.dart';
+import 'package:test_bloc/data/repository/weather_repository.dart';
+import 'package:test_bloc/presentation/screens/weather_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,27 +14,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return RepositoryProvider(
+      create: (context) => WeatherRepository(WeatherDataProvider()),
+      child: BlocProvider(
+        create: (context) => WeatherBloc(
+          context.read<WeatherRepository>(),
+        ),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.dark(useMaterial3: true),
+          home: const WeatherScreen(),
+        ),
       ),
-      home: const MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text("Bloc Demo APP"),
-      ),
-      // body:
     );
   }
 }
